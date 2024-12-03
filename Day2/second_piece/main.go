@@ -18,14 +18,15 @@ func main() {
 	unsafeList, safe := parseInput(file)
 
 	for _, unsafe := range unsafeList {
+		// Try removing each level to see if it becomes safe
 		for index := 0; index < len(unsafe); index++ {
+			// Create a new slice without the level at 'index'
 			slice := append(unsafe[:index], unsafe[index+1:]...)
-			for i := 0; i < len(slice); i++ {
-				fmt.Print(slice[i], " ")
-			}
-			fmt.Println()
+
+			// Check if this slice is safe
 			if solve(slice) == 1 {
 				safe++
+				break
 			}
 		}
 	}
@@ -33,9 +34,8 @@ func main() {
 }
 
 func parseInput(file *os.File) ([][]int, int) {
-
 	var unsafeList [][]int
-	var safe int = 0
+	var safe int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		var a []int
@@ -45,13 +45,11 @@ func parseInput(file *os.File) ([][]int, int) {
 			a = append(a, x)
 		}
 
-		sumOfIsSafe = solve(a)
-		if sumOfIsSafe == 0 {
-			unsafeList = append(unsafeList, a)
+		if solve(a) == 1 {
+			safe++
 		} else {
-			safe += 1
+			unsafeList = append(unsafeList, a)
 		}
-		a = []int{}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
@@ -60,33 +58,30 @@ func parseInput(file *os.File) ([][]int, int) {
 	return unsafeList, safe
 }
 
-func isSortedDesc(a []int) bool {
+func isSorted(a []int) (bool, bool) {
+	ascending := true
+	descending := true
 	for i := 0; i < len(a)-1; i++ {
 		if a[i] < a[i+1] {
-			return false
+			descending = false
 		}
-	}
-	return true
-}
-
-func isSortedAsc(a []int) bool {
-	for i := 0; i < len(a)-1; i++ {
 		if a[i] > a[i+1] {
-			return false
+			ascending = false
 		}
 	}
-	return true
+	return ascending, descending
 }
 
 func solve(a []int) int {
-	if !(isSortedAsc(a) || isSortedDesc(a)) {
+	ascending, descending := isSorted(a)
+
+	if !(ascending || descending) {
 		return 0
 	}
-	if isSortedAsc(a) || isSortedDesc(a) {
-		for i := 0; i < len(a)-1; i++ {
-			if !(math.Abs(float64(a[i]-a[i+1])) >= 1 && math.Abs(float64(a[i]-a[i+1])) <= 3) {
-				return 0
-			}
+
+	for i := 0; i < len(a)-1; i++ {
+		if math.Abs(float64(a[i]-a[i+1])) < 1 || math.Abs(float64(a[i]-a[i+1])) > 3 {
+			return 0
 		}
 	}
 	return 1
