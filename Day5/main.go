@@ -41,12 +41,12 @@ func input() ([][2]int, [][]*int) {
 
 func first() int {
 	pairs, queries := input()
-	beforeMap := make(map[int]map[int]bool)
+	before := make(map[int]map[int]bool)
 	for _, pair := range pairs {
-		if beforeMap[pair[1]] == nil {
-			beforeMap[pair[1]] = make(map[int]bool)
+		if before[pair[1]] == nil {
+			before[pair[1]] = make(map[int]bool)
 		}
-		beforeMap[pair[1]][pair[0]] = true
+		before[pair[1]][pair[0]] = true
 	}
 
 	var ans int
@@ -54,7 +54,7 @@ func first() int {
 		ok := true
 		for i, x := range query {
 			for j, y := range query {
-				if i < j && beforeMap[*x] != nil && beforeMap[*x][*y] {
+				if i < j && before[*x] != nil && before[*x][*y] {
 					ok = false
 					break
 				}
@@ -71,90 +71,86 @@ func first() int {
 }
 
 func second() int {
-	beforeMap := make(map[int]map[int]bool)
-	afterMap := make(map[int]map[int]bool)
+	before := make(map[int]map[int]bool)
+	after := make(map[int]map[int]bool)
 
-	// Build before and after relationship maps
 	for _, pair := range pairs {
-		if beforeMap[pair[1]] == nil {
-			beforeMap[pair[1]] = make(map[int]bool)
+		if before[pair[1]] == nil {
+			before[pair[1]] = make(map[int]bool)
 		}
-		beforeMap[pair[1]][pair[0]] = true
-
-		if afterMap[pair[0]] == nil {
-			afterMap[pair[0]] = make(map[int]bool)
+		before[pair[1]][pair[0]] = true
+		if after[pair[0]] == nil {
+			after[pair[0]] = make(map[int]bool)
 		}
-		afterMap[pair[0]][pair[1]] = true
+		after[pair[0]][pair[1]] = true
 	}
 
-	var ans int
+	var res int
 	for _, query := range queries {
-		ok := true
+		valid := true
 		for i, x := range query {
 			for j, y := range query {
-				if i < j && beforeMap[*x] != nil && beforeMap[*x][*y] {
-					ok = false
+				if i < j && before[*x] != nil && before[*x][*y] {
+					valid = false
 					break
 				}
 			}
-			if !ok {
+			if !valid {
 				break
 			}
 		}
 
-		var middlePage int
-		if ok {
-			middlePage = *query[len(query)/2]
+		var mid int
+		if valid {
+			mid = *query[len(query)/2]
 		} else {
-			querySet := make(map[int]bool)
-			degrees := make(map[int]int)
-			for _, page := range query {
-				querySet[*page] = true
-				degrees[*page] = 0
+			deg := make(map[int]int)
+			qSet := make(map[int]bool)
+			for _, p := range query {
+				qSet[*p] = true
+				deg[*p] = 0
 			}
 
-			// Build graph and in-degree map
 			for _, x := range query {
 				for _, y := range query {
-					if beforeMap[*y] != nil && beforeMap[*y][*x] {
-						degrees[*x]++
+					if before[*y] != nil && before[*y][*x] {
+						deg[*x]++
 					}
 				}
 			}
 
-			// Topological sort using Kahn's algorithm
-			queue := []int{}
-			for page := range querySet {
-				if degrees[page] == 0 {
-					queue = append(queue, page)
+			q := []int{}
+			for p := range qSet {
+				if deg[p] == 0 {
+					q = append(q, p)
 				}
 			}
 
-			var good []int
-			for len(queue) > 0 {
-				curr := queue[0]
-				queue = queue[1:]
-				good = append(good, curr)
+			var corrOrder []int
+			for len(q) > 0 {
+				curr := q[0]
+				q = q[1:]
+				corrOrder = append(corrOrder, curr)
 
-				for next := range afterMap[curr] {
-					degrees[next]--
-					if degrees[next] == 0 {
-						queue = append(queue, next)
+				for next := range after[curr] {
+					deg[next]--
+					if deg[next] == 0 {
+						q = append(q, next)
 					}
 				}
 			}
 
-			if len(good) > 0 {
-				middlePage = good[len(good)/2]
+			if len(corrOrder) > 0 {
+				mid = corrOrder[len(corrOrder)/2]
 			}
 		}
 
-		ans += middlePage
+		res += mid
 	}
-	return ans
+	return res
 }
 
 func main() {
-	fmt.Println("first res:", first())
-	fmt.Println("second res:", second())
+	fmt.Println("first :", first())
+	fmt.Println("second:", second())
 }
