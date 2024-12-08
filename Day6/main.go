@@ -2,25 +2,40 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 const H = 130
 
-var grid [H]string
-var curr struct {
-	first, second int
+var (
+	grid []string
+	curr struct {
+		row, col int
+	}
+	directions = [][]int{
+		{-1, 0}, // up
+		{0, 1},  // right
+		{1, 0},  // down
+		{0, -1}, // left
+	}
+)
+
+type visitedSet map[string]bool
+
+func (vs visitedSet) add(row, col int) {
+	key := fmt.Sprintf("%d,%d", row, col)
+	vs[key] = true
 }
 
-var directions = [][2]int{
-	{-1, 0}, // up
-	{0, 1},  // right
-	{1, 0},  // down
-	{0, -1}, // left
+func (vs visitedSet) contains(row, col int) bool {
+	key := fmt.Sprintf("%d,%d", row, col)
+	return vs[key]
 }
 
 func input() {
+	grid = make([]string, H)
 	for i := 0; i < H; i++ {
-		fmt.Scan(&grid[i])
+		fmt.Scanln(&grid[i])
 	}
 }
 
@@ -31,32 +46,32 @@ func first() {
 	for row := 0; row < rows; row++ {
 		for col := 0; col < cols; col++ {
 			if grid[row][col] == '^' {
-				curr = struct{ first, second int }{row, col}
-				fmt.Printf("^ found at {%d, %d}\n", curr.first, curr.second)
-				grid[row] = grid[row][:col] + "." + grid[row][col+1:]
+				curr.row = row
+				curr.col = col
+				fmt.Printf("^ found at {%d, %d}\n", curr.row, curr.col)
+				grid[row] = strings.Replace(grid[row], "^", ".", 1)
 				break
 			}
 		}
 	}
 
 	start := 0
-	visited := make(map[struct{ first, second int }]bool)
-	for {
-		r2 := curr.first + directions[start][0]
-		c2 := curr.second + directions[start][1]
-		vis := struct{ first, second int }{r2, c2}
-		visited[vis] = true
+	visited := make(visitedSet)
 
-		// out of bounds
-		if !(r2 >= 0 && r2 < rows && c2 >= 0 && c2 < cols) {
+	for {
+		r2 := curr.row + directions[start][0]
+		c2 := curr.col + directions[start][1]
+		visited.add(curr.row, curr.col)
+
+		if r2 < 0 || r2 >= rows || c2 < 0 || c2 >= cols {
 			break
 		}
 
 		if grid[r2][c2] != '.' {
 			start = (start + 1) % 4
 		} else {
-			curr.first = r2
-			curr.second = c2
+			curr.row = r2
+			curr.col = c2
 		}
 	}
 
