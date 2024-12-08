@@ -4,17 +4,14 @@ Welcome to my solutions for the [Advent of Code 2024](https://adventofcode.com/2
 
 ## Solutions
 
-### Day 1
+### Day 1 - [Puzzle Link](https://adventofcode.com/2024/day/1)
 
-- Day 1 [Puzzle Link](https://adventofcode.com/2024/day/1)
-- Solution: [Day 1 Solution](./Day1)
+### Day 2 - [Puzzle Link](https://adventofcode.com/2024/day/2)
 
-### Day 2
+### Day 3 - [Puzzle Link](https://adventofcode.com/2024/day/3)
 
-- Day 1 [Puzzle Link](https://adventofcode.com/2024/day/2)
-- Solution: [Day 1 Solution](./Day2)
+### Day 4 - [Puzzle Link](https://adventofcode.com/2024/day/4)
 
-### Day 3
+### Day 5 - [Puzzle Link](https://adventofcode.com/2024/day/5)
 
-- Day 1 [Puzzle Link](https://adventofcode.com/2024/day/3)
-- Solution: [Day 1 Solution](./Day3)
+### Day 6 - [Puzzle Link](https://adventofcode.com/2024/day/6)
