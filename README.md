@@ -15,3 +15,7 @@ Welcome to my solutions for the [Advent of Code 2024](https://adventofcode.com/2
 ### Day 5 - [Puzzle Link](https://adventofcode.com/2024/day/5)
 
 ### Day 6 - [Puzzle Link](https://adventofcode.com/2024/day/6)
+
+### Day 7 - [Puzzle Link](https://adventofcode.com/2024/day/7)
+
+### Day 8 - [Puzzle Link](https://adventofcode.com/2024/day/8)
