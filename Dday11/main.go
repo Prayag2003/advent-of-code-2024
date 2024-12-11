@@ -55,47 +55,55 @@ func first() {
 		arr = newStones
 	}
 
-	fmt.Println("First: ", len(arr))
+	fmt.Println("First:", len(arr))
 }
 
-func second() {
-	sum := 0
-	for _, stone := range arr2 {
-		sum += count(stone, 25)
-	}
-	fmt.Println("Second:", sum)
-}
-
-func count(stone string, steps int) int {
-	key := stone + ":" + strconv.Itoa(steps)
+func solve2(x string, t int) int {
+	key := x + "_" + strconv.Itoa(t)
 	if val, ok := memo[key]; ok {
 		return val
 	}
 
-	if steps == 0 {
+	if t == 0 {
 		return 1
 	}
 
-	if stone == "0" {
-		result := count("1", steps-1)
-		memo[key] = result
-		return result
+	if x == "0" {
+		return solve2("1", t-1)
 	}
 
-	length := len(stone)
-	if length%2 == 0 {
-		mid := length / 2
-		left := count(stone[:mid], steps-1)
-		right := count(stone[mid:], steps-1)
-		result := left + right
-		memo[key] = result
-		return result
+	if len(x)%2 == 0 {
+		mid := len(x) / 2
+		left := strings.TrimLeft(x[:mid], "0")
+		right := strings.TrimLeft(x[mid:], "0")
+
+		if left == "" {
+			left = "0"
+		}
+		if right == "" {
+			right = "0"
+		}
+
+		ret := solve2(left, t-1) + solve2(right, t-1)
+		memo[key] = ret
+		return ret
 	}
 
-	temp, _ := strconv.Atoi(stone)
-	result := count(strconv.Itoa(temp*2024), steps-1)
-	memo[key] = result
-	return result
+	num, _ := strconv.Atoi(x)
+	ret := solve2(strconv.Itoa(num*2024), t-1)
+	memo[key] = ret
+	return ret
+}
+
+func second() {
+	memo = make(map[string]int)
+
+	total := 0
+	for _, x := range arr2 {
+		total += solve2(x, 75)
+	}
+
+	fmt.Println("Second:", total)
 }
 
 func solve() {
