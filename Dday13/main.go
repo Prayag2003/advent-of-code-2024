@@ -32,13 +32,13 @@ func first() {
 		ay, _ := strconv.Atoi(matches[1])
 		bx, _ := strconv.Atoi(matches[2])
 		by, _ := strconv.Atoi(matches[3])
-		px, _ := strconv.Atoi(matches[4])
-		py, _ := strconv.Atoi(matches[5])
+		target_x, _ := strconv.Atoi(matches[4])
+		target_y, _ := strconv.Atoi(matches[5])
 
 		curr := math.Inf(1)
 		for i := 0; i <= 100; i++ {
 			for j := 0; j <= 100; j++ {
-				if ax*i+bx*j == px && ay*i+by*j == py {
+				if ax*i+bx*j == target_x && ay*i+by*j == target_y {
 					curr = math.Min(curr, float64(i*3+j))
 				}
 			}
@@ -64,19 +64,19 @@ func second() {
 		ay, _ := strconv.Atoi(matches[1])
 		bx, _ := strconv.Atoi(matches[2])
 		by, _ := strconv.Atoi(matches[3])
-		x, _ := strconv.Atoi(matches[4])
-		y, _ := strconv.Atoi(matches[5])
+		target_x, _ := strconv.Atoi(matches[4])
+		target_y, _ := strconv.Atoi(matches[5])
 
-		x += offset
-		y += offset
+		target_x += offset
+		target_y += offset
 
 		denominator := float64(bx*ay - by*ax)
 		if denominator == 0 {
 			continue
 		}
 
-		A := (float64(bx*y) - float64(by*x)) / denominator
-		B := (float64(x) - float64(ax)*A) / float64(bx)
+		A := (float64(bx*target_y) - float64(by*target_x)) / denominator
+		B := (float64(target_x) - float64(ax)*A) / float64(bx)
 
 		if float64(int(A)) == A && float64(int(B)) == B {
 			total += int(3*A + B)
